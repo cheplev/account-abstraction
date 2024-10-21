@@ -2,14 +2,15 @@
 
 pragma solidity 0.8.24;
 
-import {Script} from "forge-std/Script.sol";
+import {Script, console2} from "forge-std/Script.sol";
 import {MinimalAccount} from "../src/ethereum/MinimalAccount.sol";
+import {EntryPoint} from "lib/account-abstraction/contracts/core/EntryPoint.sol";
 
 contract HelperConfig is Script {
     error HelperConfig__InvalidChainId();
 
     struct NetworkConfig {
-        address entrytPoint;
+        address entryPoint;
         address account;
     }
 
@@ -20,6 +21,7 @@ contract HelperConfig is Script {
     uint256 constant LOCAL_CHAIN_ID = 31337;
 
     address constant BURNER_OWNER = 0xE0364e443201A57F0Be0a9e27f3b064e815a4006;
+    address constant ANVIL_DEFAULT_ACCOUNT = 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266;
 
     NetworkConfig public localNetworkConfig;
 
@@ -29,33 +31,38 @@ contract HelperConfig is Script {
         networkconfigs[ETH_SEPOLIA_CHAIN_ID] = getEthSepoliaConfig();
     }
 
-    function getConfigByChainId(uint256 chainId) public view returns (NetworkConfig memory) {
+    function getConfigByChainId(uint256 chainId) public returns (NetworkConfig memory) {
         if (chainId == LOCAL_CHAIN_ID) {
             return getOrCreateConfig();
-        } else if (networkconfigs[chainId].entrytPoint != address(0)) {
+        } else if (networkconfigs[chainId].entryPoint != address(0)) {
             return networkconfigs[chainId];
         } else {
             revert HelperConfig__InvalidChainId();
         }
     }
 
-    function getConfig() public view returns (NetworkConfig memory) {
+    function getConfig() public returns (NetworkConfig memory) {
         return getConfigByChainId(block.chainid);
     }
 
     function getEthSepoliaConfig() public pure returns (NetworkConfig memory) {
-        return NetworkConfig({entrytPoint: 0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789, account: BURNER_OWNER});
+        return NetworkConfig({entryPoint: 0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789, account: BURNER_OWNER});
     }
 
     function getZkSyncSepoliaConfig() public pure returns (NetworkConfig memory) {
-        return NetworkConfig({entrytPoint: address(0), account: BURNER_OWNER});
+        return NetworkConfig({entryPoint: address(0), account: BURNER_OWNER});
     }
 
-    function getOrCreateConfig() public view returns (NetworkConfig memory) {
+    function getOrCreateConfig() public returns (NetworkConfig memory) {
         if (localNetworkConfig.account != address(0)) {
             return localNetworkConfig;
         }
+        console2.log("Deploying mocks");
+        vm.startBroadcast(ANVIL_DEFAULT_ACCOUNT);
+        EntryPoint entryPoint = new EntryPoint();
+        vm.stopBroadcast();
+        localNetworkConfig = NetworkConfig({entryPoint: address(entryPoint), account: ANVIL_DEFAULT_ACCOUNT});
 
-        return NetworkConfig({entrytPoint: address(0), account: BURNER_OWNER});
+        return localNetworkConfig;
     }
 }

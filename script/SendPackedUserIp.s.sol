@@ -6,11 +6,7 @@ import {Script} from "forge-std/Script.sol";
 import {MinimalAccount} from "../src/ethereum/MinimalAccount.sol";
 
 contract DeployMinimal is Script {
-    function run() public {
+    function run() public {}
 
-    }
-
-    function deployMinimalAccount() public {
-
-    }
+    function deployMinimalAccount() public {}
 }

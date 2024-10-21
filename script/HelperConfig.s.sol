@@ -25,7 +25,6 @@ contract HelperConfig is Script {
 
     mapping(uint256 chainId => NetworkConfig) public networkconfigs;
 
-
     constructor() {
         networkconfigs[ETH_SEPOLIA_CHAIN_ID] = getEthSepoliaConfig();
     }
@@ -44,14 +43,11 @@ contract HelperConfig is Script {
         return getConfigByChainId(block.chainid);
     }
 
-    function getEthSepoliaConfig() public pure returns(NetworkConfig memory) {
-        return NetworkConfig({
-            entrytPoint: 0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789,
-            account: BURNER_OWNER
-        });
+    function getEthSepoliaConfig() public pure returns (NetworkConfig memory) {
+        return NetworkConfig({entrytPoint: 0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789, account: BURNER_OWNER});
     }
 
-    function getZkSyncSepoliaConfig() public pure returns(NetworkConfig memory) {
+    function getZkSyncSepoliaConfig() public pure returns (NetworkConfig memory) {
         return NetworkConfig({entrytPoint: address(0), account: BURNER_OWNER});
     }
 

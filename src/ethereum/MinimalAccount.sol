@@ -12,7 +12,6 @@ import {SIG_VALIDATION_SUCCESS} from "lib/account-abstraction/contracts/core/Hel
 import {IEntryPoint} from "lib/account-abstraction/contracts/interfaces/IEntryPoint.sol";
 
 contract MinimalAccount is IAccount, Ownable {
-
     /*//////////////////////////////////////////////////////////////
                                  ERRORS
     //////////////////////////////////////////////////////////////*/
@@ -30,14 +29,14 @@ contract MinimalAccount is IAccount, Ownable {
                                MODIFIERS
     //////////////////////////////////////////////////////////////*/
     modifier requireFromEntryPoint() {
-        if(msg.sender != address(i_entryPoint)) {
+        if (msg.sender != address(i_entryPoint)) {
             revert MinimalAccount__NotFromEntryPoint();
         }
         _;
     }
 
     modifier requireFromEntryPointOrOwner() {
-        if(msg.sender != address(i_entryPoint) && msg.sender != owner()) {
+        if (msg.sender != address(i_entryPoint) && msg.sender != owner()) {
             revert MinimalAccount__NotFromEntryPointOrOwner();
         }
         _;
@@ -47,11 +46,11 @@ contract MinimalAccount is IAccount, Ownable {
                                FUNCTIONS
     //////////////////////////////////////////////////////////////*/
 
-    constructor(address  entryPoint) Ownable(msg.sender) {
+    constructor(address entryPoint) Ownable(msg.sender) {
         i_entryPoint = IEntryPoint(entryPoint);
     }
 
-    receive() external payable{}
+    receive() external payable {}
 
     /*//////////////////////////////////////////////////////////////
                            EXTERNAL FUNCTIONS
@@ -104,8 +103,7 @@ contract MinimalAccount is IAccount, Ownable {
     /*//////////////////////////////////////////////////////////////
                                 GETTERS
     //////////////////////////////////////////////////////////////*/
-    function getEntryPoint() external view returns(address) {
+    function getEntryPoint() external view returns (address) {
         return address(i_entryPoint);
     }
-
 }

@@ -22,7 +22,7 @@ contract MinimalAccountTest is Test {
     }
 
     // USDC mint
-    // msg.sender -> MinimalAccount 
+    // msg.sender -> MinimalAccount
     // approve amount
     // USDC contract
     // come from entryupoint
@@ -36,9 +36,7 @@ contract MinimalAccountTest is Test {
         vm.prank(minimalAccount.owner());
         minimalAccount.execute(dest, value, functionData);
         assertEq(usdc.balanceOf(address(minimalAccount)), 1e18);
-
     }
-
 
     function testNonOwnerCannotExecuteCommands() public {
         assertEq(usdc.balanceOf(address(minimalAccount)), 0);
@@ -49,6 +47,5 @@ contract MinimalAccountTest is Test {
         vm.prank(randomUser);
         vm.expectRevert(MinimalAccount.MinimalAccount__NotFromEntryPointOrOwner.selector);
         minimalAccount.execute(dest, value, functionData);
-
     }
 }

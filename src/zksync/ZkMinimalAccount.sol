@@ -113,7 +113,7 @@ contract ZKMinimalAccount is IAccount, Ownable, Test {
     /*//////////////////////////////////////////////////////////////
                            INTERNAL FUNCTIONS
     //////////////////////////////////////////////////////////////*/
-   function _validateTransaction(Transaction memory _transaction) internal returns (bytes4 magic) {
+    function _validateTransaction(Transaction memory _transaction) internal returns (bytes4 magic) {
         // Call nonceholder
         // increment nonce
         // call(x, y, z) -> system contract call
@@ -142,7 +142,6 @@ contract ZKMinimalAccount is IAccount, Ownable, Test {
         }
         return magic;
     }
-
 
     function _executeTransaction(Transaction memory _transaction) internal {
         address to = address(uint160(_transaction.to));

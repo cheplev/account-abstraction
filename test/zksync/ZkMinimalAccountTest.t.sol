@@ -22,6 +22,7 @@ import {ECDSA} from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
 contract ZkMinimalAccountTest is Test {
     using MessageHashUtils for bytes32;
+
     ZKMinimalAccount minimalAccount;
     ERC20Mock usdc;
     uint256 constant AMOUNT = 1e18;
@@ -58,14 +59,12 @@ contract ZkMinimalAccountTest is Test {
             _createUnsignedTransaction(minimalAccount.owner(), 113, dest, value, functionData);
 
         transaction = _signTransaction(transaction);
-  
+
         vm.prank(BOOTLOADER_FORMAL_ADDRESS);
         bytes4 magic = minimalAccount.validateTransaction(EMPTY_BYTES32, EMPTY_BYTES32, transaction);
 
         assertEq(magic, ACCOUNT_VALIDATION_SUCCESS_MAGIC);
-
     }
-
 
     function testZkCanMintUSDC() public {
         address dest = address(usdc);
@@ -80,7 +79,6 @@ contract ZkMinimalAccountTest is Test {
 
         assertEq(usdc.balanceOf(address(minimalAccount)), AMOUNT);
     }
-
 
     /*//////////////////////////////////////////////////////////////
                                 HELPERS
@@ -115,7 +113,7 @@ contract ZkMinimalAccountTest is Test {
         });
     }
 
-    function _signTransaction(Transaction memory _transaction) internal view returns (Transaction memory ) {
+    function _signTransaction(Transaction memory _transaction) internal view returns (Transaction memory) {
         bytes32 unsignedTransactionHash = MemoryTransactionHelper.encodeHash(_transaction);
         // bytes32 digest = unsignedTransactionHash.toEthSignedMessageHash();
         uint256 ANVIL_DEFAULT_KEY = 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80;
@@ -125,7 +123,7 @@ contract ZkMinimalAccountTest is Test {
         (v, r, s) = vm.sign(ANVIL_DEFAULT_KEY, unsignedTransactionHash);
         Transaction memory signedTransaction = _transaction;
         signedTransaction.signature = abi.encodePacked(r, s, v);
-  
+
         return signedTransaction;
     }
 }

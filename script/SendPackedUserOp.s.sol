@@ -14,11 +14,11 @@ contract SendPackedUserOp is Script {
 
     function run() public {}
 
-    function generateSignedUserOp(bytes memory callData, HelperConfig.NetworkConfig memory config, address minimalAccount)
-        public
-        view
-        returns (PackedUserOperation memory)
-    {
+    function generateSignedUserOp(
+        bytes memory callData,
+        HelperConfig.NetworkConfig memory config,
+        address minimalAccount
+    ) public view returns (PackedUserOperation memory) {
         // generate unsigned data
         uint256 nonce = vm.getNonce(minimalAccount) - 1;
         PackedUserOperation memory userOp = _generateUnsignedUserOp(callData, minimalAccount, nonce);
@@ -46,7 +46,7 @@ contract SendPackedUserOp is Script {
         pure
         returns (PackedUserOperation memory)
     {
-        uint256 verificationGasLimit = 116777216;
+        uint256 verificationGasLimit = 16777216;
         uint256 callGasLimit = verificationGasLimit;
         uint128 maxPriorityFeePerGas = 256;
         uint128 maxFeePerGas = maxPriorityFeePerGas;
